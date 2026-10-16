@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="dark" />
+    <title>Outdoor Console</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Space+Grotesk:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="bg"></div>
+    <div class="wrap">
+      <header class="topbar">
+        <div class="brand">
+          <span class="mark">Outdoor</span>
+          <span class="mark thin">Console</span>
+        </div>
+        <nav class="nav">
+          <a href="#weather">Weather</a>
+          <a href="#mapping">Mapping</a>
+          <a href="#packing">Packing</a>
+        </nav>
+      </header>
+
+      <main class="main">
+        <section class="hero">
+          <h1 class="title">Outdoor Reference</h1>
+          <p class="subtitle">
+            A dark, fast dashboard for forecasts, maps, and checklists — tuned for quick
+            decisions.
+          </p>
+        </section>
+
+        <section class="searchband" aria-label="Location lookup">
+          <div class="searchrow">
+            <label class="sr-only" for="zipInput">ZIP or place</label>
+            <input
+              id="zipInput"
+              class="input"
+              inputmode="search"
+              autocomplete="off"
+              placeholder="Enter ZIP or place (e.g. 94105, 'Tahoe City', 'Honolulu')"
+              maxlength="80"
+            />
+
+            <button id="zipGo" class="btn primary" type="button">Lookup</button>
+
+            <div class="pillgroup" role="group" aria-label="Quick actions">
+              <button id="useLast" class="btn ghost" type="button" title="Use last ZIP">
+                Last ZIP
+              </button>
+              <button id="clearAll" class="btn ghost" type="button" title="Clear saved data">
+                Clear saved
+              </button>
+            </div>
+          </div>
+
+          <div class="stats" aria-live="polite">
+            <div class="stat">
+              <div class="statLabel">Location</div>
+              <div id="statLocation" class="statValue">—</div>
+            </div>
+            <div class="stat">
+              <div class="statLabel">Coordinates</div>
+              <div id="statCoords" class="statValue">—</div>
+            </div>
+            <div class="stat">
+              <div class="statLabel">Days loaded</div>
+              <div id="statDays" class="statValue">—</div>
+            </div>
+          </div>
+
+          <div id="globalError" class="callout error hidden" role="alert"></div>
+        </section>
+
+        <section id="weather" class="card">
+          <header class="cardHead">
+            <h2 class="cardTitle">Weather</h2>
+            <div class="cardMeta">
+              <span class="chip" id="weatherChip">ZIP: —</span>
+              <span class="chip subtle" id="weatherUpdated">Updated: —</span>
+            </div>
+          </header>
+
+          <div class="cardBody">
+            <div class="grid2">
+              <div class="panel">
+                <div class="panelTitle">Overview</div>
+                <dl class="kv" id="weatherOverview">
+                  <div class="kvRow">
+                    <dt>Summary</dt>
+                    <dd>—</dd>
+                  </div>
+                  <div class="kvRow">
+                    <dt>High / Low (today)</dt>
+                    <dd>—</dd>
+                  </div>
+                  <div class="kvRow">
+                    <dt>Wind (max)</dt>
+                    <dd>—</dd>
+                  </div>
+                  <div class="kvRow">
+                    <dt>Sunrise / Sunset</dt>
+                    <dd>—</dd>
+                  </div>
+                  <div class="kvRow">
+                    <dt>Moon phase</dt>
+                    <dd>—</dd>
+                  </div>
+                </dl>
+              </div>
+
+              <div class="panel">
+                <div class="panelTitle">Sea state</div>
+                <dl class="kv" id="seaOverview">
+                  <div class="kvRow">
+                    <dt>Wave height (max)</dt>
+                    <dd>—</dd>
+                  </div>
+                  <div class="kvRow">
+                    <dt>Wave period (max)</dt>
+                    <dd>—</dd>
+                  </div>
+                  <div class="kvRow">
+                    <dt>Note</dt>
+                    <dd class="muted">—</dd>
+                  </div>
+                </dl>
+              </div>
+            </div>
+
+            <div class="grid2">
+              <div class="panel">
+                <div class="panelTitle">5–10 day forecast</div>
+                <div id="forecastList" class="forecast" aria-label="Daily forecast list">
+                  <div class="skeleton">Enter a ZIP code to load the forecast.</div>
+                </div>
+              </div>
+              <div class="panel">
+                <div class="panelTitle">Moon phase legend</div>
+                <dl class="kv smallKv">
+                  <div class="kvRow">
+                    <dt>New</dt>
+                    <dd>0.00 — dark, no visible moon.</dd>
+                  </div>
+                  <div class="kvRow">
+                    <dt>Waxing crescent</dt>
+                    <dd>0.03–0.22 — thin growing sliver.</dd>
+                  </div>
+                  <div class="kvRow">
+                    <dt>First quarter</dt>
+                    <dd>0.22–0.28 — right half lit.</dd>
+                  </div>
+                  <div class="kvRow">
+                    <dt>Waxing gibbous</dt>
+                    <dd>0.28–0.47 — mostly lit, growing.</dd>
+                  </div>
+                  <div class="kvRow">
+                    <dt>Full</dt>
+                    <dd>0.47–0.53 — full disc illuminated.</dd>
+                  </div>
+                  <div class="kvRow">
+                    <dt>Waning gibbous</dt>
+                    <dd>0.53–0.72 — mostly lit, shrinking.</dd>
+                  </div>
+                  <div class="kvRow">
+                    <dt>Last quarter</dt>
+                    <dd>0.72–0.78 — left half lit.</dd>
+                  </div>
+                  <div class="kvRow">
+                    <dt>Waning crescent</dt>
+                    <dd>0.78–0.97 — thin shrinking sliver.</dd>
+                  </div>
+                </dl>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="mapping" class="card">
+          <header class="cardHead">
+            <h2 class="cardTitle">Mapping Tool</h2>
+            <div class="cardMeta">
+              <span class="chip subtle" id="mapHint">Tip: type an address, place, or “lat,lon”.</span>
+            </div>
+          </header>
+
+          <div class="cardBody">
+            <div class="mapRow">
+              <label class="sr-only" for="mapQuery">Map query</label>
+              <input
+                id="mapQuery"
+                class="input"
+                placeholder="Search maps… (ex: 'Yosemite Valley' or '37.745,-119.59')"
+              />
+              <button id="mapUseZip" class="btn ghost" type="button">Use ZIP location</button>
+            </div>
+
+            <div class="mapGrid" role="group" aria-label="Open mapping sites">
+              <button class="btn primary" data-map="google" type="button">Open Google Maps</button>
+              <button class="btn ghost" data-map="osm" type="button">Open OpenStreetMap</button>
+              <button class="btn ghost" data-map="bing" type="button">Open Bing Maps</button>
+              <button class="btn ghost" data-map="caltopo" type="button">Open CalTopo</button>
+            </div>
+
+            <div class="panel">
+              <div class="panelTitle">Pinned spots</div>
+              <div class="pinRow">
+                <button id="pinCurrent" class="btn ghost" type="button">Pin current query</button>
+                <button id="pinClear" class="btn ghost" type="button">Clear pins</button>
+              </div>
+              <div id="pinList" class="pins"></div>
+            </div>
+          </div>
+        </section>
+
+        <section id="movement" class="card">
+          <header class="cardHead">
+            <h2 class="cardTitle">Movement Calculator</h2>
+            <div class="cardMeta">
+              <span class="chip subtle">Distance + pace/speed → time</span>
+            </div>
+          </header>
+
+          <div class="cardBody">
+            <div class="panel">
+              <div class="panelTitle">Inputs</div>
+              <div class="moveGrid">
+                <div class="moveField">
+                  <label class="moveLabel" for="moveMode">Mode</label>
+                  <select id="moveMode" class="input moveSelect">
+                    <option value="pace">Pace (min/mi)</option>
+                    <option value="speed">Speed (mph)</option>
+                  </select>
+                </div>
+
+                <div class="moveField">
+                  <label class="moveLabel" for="moveDistance">Distance</label>
+                  <div class="moveDistRow">
+                    <input
+                      id="moveDistance"
+                      class="input"
+                      inputmode="decimal"
+                      placeholder="e.g. 8.5"
+                      autocomplete="off"
+                    />
+                    <select id="moveDistUnit" class="input moveUnitSelect">
+                      <option value="mi">mi</option>
+                      <option value="km">km</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="moveField" id="paceField">
+                  <label class="moveLabel" for="movePace">Pace (min/mi)</label>
+                  <input
+                    id="movePace"
+                    class="input"
+                    inputmode="decimal"
+                    placeholder="e.g. 18 or 18:30"
+                    autocomplete="off"
+                  />
+                </div>
+
+                <div class="moveField hidden" id="speedField">
+                  <label class="moveLabel" for="moveSpeed">Speed (mph)</label>
+                  <input
+                    id="moveSpeed"
+                    class="input"
+                    inputmode="decimal"
+                    placeholder="e.g. 62"
+                    autocomplete="off"
+                  />
+                </div>
+              </div>
+
+              <div class="pinRow" style="margin-top: 12px">
+                <button id="moveSwap" class="btn ghost" type="button">Swap pace/speed</button>
+                <button id="moveClear" class="btn ghost" type="button">Clear</button>
+              </div>
+            </div>
+
+            <div class="grid2" style="margin-top: 14px">
+              <div class="panel">
+                <div class="panelTitle">Result</div>
+                <dl class="kv" id="moveResult">
+                  <div class="kvRow">
+                    <dt>Time</dt>
+                    <dd id="moveTime">—</dd>
+                  </div>
+                  <div class="kvRow">
+                    <dt>Equivalent pace</dt>
+                    <dd id="moveEqPace">—</dd>
+                  </div>
+                  <div class="kvRow">
+                    <dt>Equivalent speed</dt>
+                    <dd id="moveEqSpeed">—</dd>
+                  </div>
+                </dl>
+              </div>
+
+              <div class="panel">
+                <div class="panelTitle">Notes</div>
+                <div class="muted small">
+                  - Pace accepts <b>18</b> (minutes) or <b>18:30</b> (mm:ss).<br />
+                  - Time rounds to the nearest minute for quick planning.
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="packing" class="card">
+          <header class="cardHead">
+            <h2 class="cardTitle">General / Packing</h2>
+            <div class="cardMeta">
+              <span class="chip subtle">Saved locally in this browser</span>
+            </div>
+          </header>
+
+          <div class="cardBody">
+            <div class="grid2">
+              <div class="panel">
+                <div class="panelTitle">Checklist</div>
+                <div class="todoAdd">
+                  <label class="sr-only" for="todoInput">Add checklist item</label>
+                  <input id="todoInput" class="input" placeholder="Add an item (ex: 'Headlamp')" />
+                  <button id="todoAddBtn" class="btn primary" type="button">Add</button>
+                </div>
+                <div id="todoList" class="todos"></div>
+              </div>
+
+              <div class="panel">
+                <div class="panelTitle">Notes</div>
+                <label class="sr-only" for="notes">Notes</label>
+                <textarea
+                  id="notes"
+                  class="textarea"
+                  placeholder="Trip notes, reminders, ideas…"
+                  rows="10"
+                ></textarea>
+                <div class="muted small">
+                  Tip: use this for last-minute calls like “bring spikes” or “check tide window”.
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <footer class="footer">
+          <span class="muted small">
+            Data sources: Zippopotam (ZIP → lat/lon) and Open‑Meteo (weather/marine/sun).
+          </span>
+        </footer>
+      </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/mgrs@1.0.0/dist/mgrs.js"></script>
+    <script src="./app.js" defer></script>
+  </body>
+</html>

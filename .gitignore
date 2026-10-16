@@ -1,0 +1,29 @@
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor / IDE / AI assistant folders
+.vscode/
+.idea/
+.cursor/
+*.swp
+*~
+
+# Logs and debug output
+*.log
+debug*.txt
+
+# Local environment and secrets (never commit these)
+.env
+.env.*
+*.pem
+*.key
+
+# Backups and scratch files
+*.bak
+*.orig
+*.tmp
+
+# Dependencies (if any tooling is added later)
+node_modules/
